@@ -1,43 +1,31 @@
-import "./App.css";
-import { Toaster } from "react-hot-toast";
-import { lazy, Suspense } from "react";
-import { Routes, Route } from "react-router-dom";
-import Loader from "./components/DefaultPages/Loader";
-import Navigation from "./components/DefaultPages/Navigation";
-import { Container } from "./styled/Container.styled";
+import { lazy, Suspense } from 'react';
+import { Route, Routes, Navigate } from 'react-router-dom';
+import './App.css';
+import Container from '@mui/material/Container';
 
-const HomePage = lazy(() => import("./components/DefaultPages/HomePage"));
-const NotFoundPage = lazy(() =>
-  import("./components/DefaultPages/NotFoundPage")
-);
-const Movies = lazy(() => import("./components/SearchMovies/Movies"));
-const MovieDetailsPage = lazy(() =>
-  import("./components/MovieDetailsPage/MovieDetailsPage")
-);
-const Cast = lazy(() => import("./components/MovieDetailsPage/Cast"));
-const Reviews = lazy(() => import("./components/MovieDetailsPage/Reviews"));
+const HomePage = lazy(() => import('./pages/HomePage'));
+const MoviesPage = lazy(() => import('./pages/MoviesPage'));
+const MovieDetails = lazy(() => import('./components/MovieDetails'));
+const Navigation = lazy(() => import('./components/Navigation'));
+const MovieCast = lazy(() => import('./components/MovieCast'));
+const MovieReviews = lazy(() => import('./components/MovieReviews'));
 
 function App() {
   return (
-    <>
-      <Navigation />
-      <Toaster />
-      <main>
-        <Container>
-          <Suspense fallback={<Loader/>}>
-            <Routes>
-              <Route path="/" element={<HomePage />} />
-              <Route path="/movies/" element={<Movies />} />
-              <Route path="/movies/:movieId" element={<MovieDetailsPage />}>
-                <Route path="cast" element={<Cast />} />
-                <Route path="reviews" element={<Reviews />} />
-              </Route>
-              <Route path="*" element={<NotFoundPage />} />
-            </Routes>
-          </Suspense>
-        </Container>
-      </main>
-    </>
+    <Container maxWidth="lg">
+      <Suspense fallback={<h1>Loading...</h1>}>
+        <Navigation />
+        <Routes>
+          <Route path="/" element={<HomePage />} />
+          <Route path="/movies" element={<MoviesPage />} />
+          <Route path="/movies/:movieId/*" element={<MovieDetails />}>
+            <Route path="cast" element={<MovieCast />} />
+            <Route path="reviews" element={<MovieReviews />} />
+          </Route>
+          <Route path="*" element={<Navigate to="/" />} />
+        </Routes>
+      </Suspense>
+    </Container>
   );
 }
 
